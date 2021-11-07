@@ -1,55 +1,68 @@
-const express = require("express");
-const app = express();
-const socket = require("socket.io");
-const cors = require("cors");
-const dotenv = require('dotenv');
-const { getUser, connectUserOnChannel } = require("./chatUser");
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+var http = require("http");
+let mongoose = require('mongoose');
+var socketio = require('socket.io')
+var cors = require('cors');
+var messagesRouter = require('./routes/messages');
 
-dotenv.config();
+var app = express();
 
-app.use(express());
+app.use(cors({
+  origin: '*'
+}));
 
-const port = process.env.SERVER_PORT;
+var port = 5000;
 
-app.use(cors());
+var server = http.createServer(app);
 
-var server = app.listen(
-  port,
-  console.log(
-    `Server is running on the port no: ${(port)} `
-      .green
-  )
-);
+server.listen(port,()=>{
+  console.log(`Server is up on port ${port}!`);
+})
 
-const io = socket(server)
+io = socketio(server);
+app.set('socketio', io);
 
-io.on("connection", (socket) => {
-  socket.on("connectUserOnChannel", ({ userName, channelName }) => {
-    const userConnected = connectUserOnChannel(socket.id, userName, channelName);
-    console.log(userConnected)
-    
-    socket.join(userConnected.channelName);
+require('./socket')(io)
 
-    socket.emit("message", {
-      userId: userConnected.id,
-      userName: userConnected.userName,
-      text: `Hello ${userConnected.userName}`,
-    });
+const url = 'mongodb://localhost:27017/';
+const options = {useNewUrlParser: true, useUnifiedTopology: true}
+const mongo = mongoose.connect(url, options);
+mongo.then(() => {
+    console.log('connected');
+}, error => {
+    console.log(error, 'error');
+})
 
-    socket.broadcast.to(userConnected.channelName).emit("message", {
-      userId: userConnected.id,
-      username: userConnected.userName,
-      text: `${userConnected.userName} has joined the chat`,
-    });
-  });
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
-  socket.on("message", (text) => {
-    const userConnected = getUser(socket.id);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-    io.to(userConnected.channelName).emit("message", {
-      userId: userConnected.id,
-      userName: userConnected.userName,
-      text: text,
-    });
-  });
+app.use('/messages', messagesRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
 });
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;

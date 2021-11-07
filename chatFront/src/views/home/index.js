@@ -6,6 +6,27 @@ function Home({ socket }) {
   const [userName, setUserName] = useState("");
   const [channelName, setChannelName] = useState("");
 
+  const callApi = () => {
+    socket.emit("connectUserOnChannel", { userName, channelName })
+    try {
+      fetch('http://localhost:5000/channels/connectUserOnChannel', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            userName: userName,
+            channelName: channelName
+        }),
+      })
+      .then((response) => {
+      })
+    }
+    catch (e){
+    }
+  }
+
   return (
     <div className="home">
       <h1>Twitch chat clone</h1>
@@ -20,7 +41,8 @@ function Home({ socket }) {
         onChange={(e) => setChannelName(e.target.value)}
       />
       <Link
-        onClick={event => (!userName || !channelName) ? (event.preventDefault(), alert("Error ! user or channel are missing !")) : socket.emit("connectUserOnChannel", { userName, channelName })}
+        onClick={event => (!userName || !channelName) ? (event.preventDefault(), alert("Error ! user or channel are missing !")) : callApi()
+      }
         to={`/chat/?userName=${userName}&channelName=${channelName}`}
       >
         <button type="submit">Sign In</button>

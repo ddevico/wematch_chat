@@ -1,0 +1,4 @@
+chatBack/node_modules/*
+chatFront/node_modules/*
+chatBack/package-lock.json
+chatFront/package-lock.json
