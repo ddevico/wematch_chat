@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux'
+import { isAuthenticated } from '../../utils/Auth'
+import { Link, useNavigate } from "react-router-dom";
 
 function Home({ socket }) {
   const [userName, setUserName] = useState("");
   const [channelName, setChannelName] = useState("");
+  const user = useSelector(state => state.userReducer.user)
+  const navigate = useNavigate();
+
+  if (!isAuthenticated()) {
+    navigate('/signIn')
+    return ;
+  }
 
   const callApi = () => {
     socket.emit("connectUserOnChannel", { userName, channelName })

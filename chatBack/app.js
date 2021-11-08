@@ -8,6 +8,7 @@ let mongoose = require('mongoose');
 var socketio = require('socket.io')
 var cors = require('cors');
 var messagesRouter = require('./routes/messages');
+var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -48,6 +49,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/messages', messagesRouter);
+app.use('/users', usersRouter);
+usersRouter
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

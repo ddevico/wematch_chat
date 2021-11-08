@@ -1,7 +1,8 @@
-import { ProcessReducer } from "./process";
-import { combineReducers } from "redux";
-const rootReducers = combineReducers({
-  ProcessReducer: ProcessReducer,
+import { combineReducers } from 'redux';
+import userReducer from './userReducer';
+
+const rootReducer = combineReducers({
+  userReducer: userReducer,
 });
 
-export default rootReducers;
+export default rootReducer
