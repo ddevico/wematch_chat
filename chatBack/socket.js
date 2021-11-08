@@ -33,6 +33,7 @@ io.on("connection", (socket) => {
     });
     socket.on("message", (text) => {
       const userConnected = getUser(socket.id);
+      console.log(socket)
       io.to(userConnected.channelName).emit("message", {
         userId: userConnected.id,
         userName: userConnected.userName,

@@ -25,6 +25,9 @@ function SignUp() {
           if (response.status !== 404){
             navigate('/')
           }
+          else {
+            alert("User already exists !")
+          }
       })
     } catch (error) {
       console.log(error)
@@ -33,7 +36,8 @@ function SignUp() {
 
   return (
     <div className="home">
-      <h1>Create account</h1>
+      <h1>Twitch chat clone</h1>
+      <p>Create account</p>
       <input
         placeholder="User name"
         value={userName}
@@ -49,6 +53,10 @@ function SignUp() {
         onClick={event => (!userName || !password) ? (event.preventDefault(), alert("Error ! user or password are missing !")) : callApi()
         }
         type="submit">Create
+      </button>
+      <button
+      onClick={() => navigate('/')}
+        type="submit">Return
       </button>
     </div>
   );

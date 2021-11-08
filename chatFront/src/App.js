@@ -14,29 +14,40 @@ import io from "socket.io-client";
 const socket = io.connect('/');
 const store = createStore(rootReducers);
 
+const PrivateRoute = ({ children }) => {  
+  return isAuthenticated()  ? children : <Navigate to="/SignIn" />;
+}
+
 const App = () => {
   return (
     <Provider store={store}>
-    <BrowserRouter>
+      <BrowserRouter>
       <div className="App">
         <Routes>
           <Route path='/signUp' element={<SignUp />} />
           <Route
             path='/signIn'
             element={!isAuthenticated() ? (<SignIn />) : (<Navigate to={{ pathname: "/" }} />)}
-            />
-          <Route
-            path='/'
-            element={<Home socket={socket}/>}
           />
           <Route
+          element={
+            <PrivateRoute>
+              <Home socket={socket}/>
+            </PrivateRoute>
+          }
+          path="/" />
+          <Route
+            element={
+              <PrivateRoute>
+                <TwitchChat socket={socket}/>
+              </PrivateRoute>
+            }
             path="/chat"
-            element={isAuthenticated() ? (<TwitchChat socket={socket}/>) : (<Navigate to={{ pathname: "/signIn" }} />)}
           />
         </Routes>    
-    </div>
-</BrowserRouter>
-</Provider>
+      </div>
+    </BrowserRouter>
+  </Provider>
   );
 }
 

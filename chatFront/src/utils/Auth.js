@@ -12,3 +12,7 @@ export const logout = () => {
     window.localStorage.removeItem("user")
     sessionStorage.removeItem(TOKEN_KEY)
 }
+
+export const getToken = () => {
+    return sessionStorage.getItem(TOKEN_KEY)
+}

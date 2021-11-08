@@ -1,15 +1,23 @@
 import "./style.scss";
 import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from 'react-redux'
+import { logout, getToken } from '../../utils/Auth'
+import { setUser } from '../../store/action/userAction'
 import Message from "./components/bubbleMessage";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 const TwitchChat = ({ socket }) => {
   const [text, setText] = useState("");
   const [message, setMessage] = useState([]);
   const [updateMessage, setUpdateMessage] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams()
-  const userName = searchParams.get('userName');
+  let userName = useSelector(state => state.userReducer.user)
   const channelName = searchParams.get('channelName');
+  const navigate = useNavigate();
+
+  if (!userName) {
+    userName = getToken()
+  }
 
   async function getMessages() {
     try {
@@ -29,6 +37,10 @@ const TwitchChat = ({ socket }) => {
   }
 
   useEffect(() => {
+    socket.emit("connectUserOnChannel", { userName, channelName })
+  }, [socket])
+
+  useEffect(() => {
     getMessages()
   }, []);
 
@@ -41,6 +53,7 @@ const TwitchChat = ({ socket }) => {
   const sendMessage = () => {
     if (text !== "") {
       if (updateMessage){
+        console.log(updateMessage)
         fetch('http://localhost:5000/messages/updateMessage/' + updateMessage._id, {
           method: 'PUT',
           headers: {
@@ -92,8 +105,17 @@ const TwitchChat = ({ socket }) => {
     setUpdateMessage(key);
   }
 
+  const disconnectUser = () => {
+    setUser(false)
+    logout();
+    navigate('/')
+  }
+
   return (
     <div className="chat">
+      <button onClick={() => disconnectUser()} type="submit">
+          Disconnect
+      </button>
       <div className="channel-name">
         <h2>
           {channelName} channel

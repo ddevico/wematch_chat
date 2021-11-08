@@ -32,7 +32,6 @@ function SignIn() {
       .then((response) => {
           if (response.status !== 404){
             login(userName)
-            window.localStorage.setItem("user", userName)
             dispatch(setUser(userName))
             navigate('/')
           }

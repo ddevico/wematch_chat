@@ -20,6 +20,9 @@ module.exports = {
                         res.json(user);
                     })
                 }
+                else {
+                    res.sendStatus(404);
+                }
             })
         }
         catch (e) {
