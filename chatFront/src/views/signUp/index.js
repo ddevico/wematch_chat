@@ -35,7 +35,7 @@ function SignUp() {
   }
 
   return (
-    <div className="home">
+    <div className="sign-up">
       <h1>Twitch chat clone</h1>
       <p>Create account</p>
       <input
@@ -54,10 +54,7 @@ function SignUp() {
         }
         type="submit">Create
       </button>
-      <button
-      onClick={() => navigate('/')}
-        type="submit">Return
-      </button>
+      <a onClick={() => navigate('/')} style={{cursor: 'pointer'}}>Return</a>
     </div>
   );
 }

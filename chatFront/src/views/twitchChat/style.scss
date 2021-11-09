@@ -5,31 +5,36 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid black;
+  border: none;
+  box-shadow: 0 0 10px #719ECE;
+  border-radius: 5px;
   .channel-name {
     text-align: start;
     width: 100%;
-    background-color: #225dff;
-    border-bottom: 1px solid black;
+    background-color: #2196f3;
+    border-radius: 5px;
     font-weight: 300;
-    padding-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     h2 {
       color: white;
-      margin-top: 10px;
-      margin-left: 10px;
+      margin-left: 20px;
     }
   }
   .message {
-    height: 70%;
+    height: 100%;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     width: 100%;
     align-content: flex-start;
     .receiver {
-      margin-left: 0px;
+      margin-left: 10px;
+      margin-right: auto;
       max-width: 220px;
-      padding-left: 0.5rem;
+      display: flex;
+      flex-direction: column;
       p {
         font-size: 1rem;
         background-color: #f0f0f0;
@@ -41,6 +46,7 @@
       span {
         font-size: 12px;
         color: grey;
+        margin-top: -10px;        
       }
     }
     .sender {
@@ -53,7 +59,7 @@
       p {
         text-align: end;
         border-radius: 10px;
-        background-color: #225dff;
+        background-color: #2196f3;
         color: white;
       }
       span {
@@ -62,6 +68,10 @@
         padding-left: 0rem;
         padding-right: 0.5rem;
       }
+      a {
+        font-weight: bold;
+        color:black
+      }
     }
   }
   .submit-message {
@@ -69,6 +79,7 @@
     height: 50px;
     display: flex;
     border-top: 1px solid black;
+    margin-top: 10px;
     input {
       width: 80%;
       text-decoration: none;
@@ -83,7 +94,7 @@
     button {
       width: 30%;
       border: none;
-      background-color: #225dff;
+      background-color: #2196f3;
       &:hover {
         cursor: pointer;
       }

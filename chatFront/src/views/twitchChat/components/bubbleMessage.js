@@ -1,36 +1,29 @@
 import ".././style.scss";
 import React, { useEffect, useRef } from "react";
 
-const BubbleMessage = ({ message, userName, editMessage}) => {
+const BubbleMessage = ({ messages, userName, editMessage}) => {
     const messageEnd = useRef(null);
     const scrollToBottom = () => {
         messageEnd.current.scrollIntoView({ behavior: "smooth" });
     };
     
-    useEffect(scrollToBottom, [message]);
+    useEffect(scrollToBottom, [messages]);
 
     return (
       <div className="message">
-        {message.map((key) => {
-          if (key.userName === userName) {
+        {messages.map((message, key) => {
+          if (message.userName === userName) {
             return (
-              <div className="receiver sender" >
-                <p>{key.text}</p>
-                <button onClick={() => editMessage(key)}>Edit</button>
-                <span>{key.userName}</span>
+              <div key={key} className="receiver sender">
+                <p>{message.text}</p>
+                <span>{message.userName} <a onClick={() => editMessage(message)} style={{cursor: 'pointer'}}>edit</a></span>
               </div>
             );
-          } else if (key.userName === undefined) {
-            return (
-              <div className="receiver sender">
-                <span>{key.text}</span>
-              </div>
-            )
           } else {
             return (
-              <div className="receiver">
-                <p>{key.text} </p>
-                <span>{key.userName}</span>
+              <div key={key} className="receiver">
+                <p>{message.text}</p>
+                <span>{message.userName}</span>
               </div>
             );
           }

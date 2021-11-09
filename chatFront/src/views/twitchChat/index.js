@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux'
 import { logout, getToken } from '../../utils/Auth'
 import { setUser } from '../../store/action/userAction'
 import Message from "./components/bubbleMessage";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSignOutAlt } from '@fortawesome/fontawesome-free-solid'
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 const TwitchChat = ({ socket }) => {
   const [text, setText] = useState("");
-  const [message, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [updateMessage, setUpdateMessage] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams()
   let userName = useSelector(state => state.userReducer.user)
@@ -30,7 +32,7 @@ const TwitchChat = ({ socket }) => {
      })
       .then((response) => response.json())
       .then((response) => {
-        setMessage(response)
+        setMessages(response)
       })
     } catch (error) {
     }
@@ -53,7 +55,6 @@ const TwitchChat = ({ socket }) => {
   const sendMessage = () => {
     if (text !== "") {
       if (updateMessage){
-        console.log(updateMessage)
         fetch('http://localhost:5000/messages/updateMessage/' + updateMessage._id, {
           method: 'PUT',
           headers: {
@@ -88,12 +89,12 @@ const TwitchChat = ({ socket }) => {
           }),
         })
         .then((response) => {
-          message.push({
+          messages.push({
             userName: userName,
             channelName: channelName,
             text: text
           });
-          setMessage([...message]);
+          setMessages([...messages]);
         })
         setText("");
       }
@@ -107,21 +108,20 @@ const TwitchChat = ({ socket }) => {
 
   const disconnectUser = () => {
     setUser(false)
-    logout();
-    navigate('/')
+    window.localStorage.removeItem("user")
+    sessionStorage.removeItem("@SecretToken")
+    navigate('/signIn')
   }
 
   return (
     <div className="chat">
-      <button onClick={() => disconnectUser()} type="submit">
-          Disconnect
-      </button>
       <div className="channel-name">
-        <h2>
-          {channelName} channel
-        </h2>
+          <h2>
+            {channelName} channel
+          </h2>
+          <FontAwesomeIcon onClick={() => disconnectUser()} style={{marginTop: "19px", marginRight:"10px", cursor: 'pointer'}} color="white" size="2x" ali icon={faSignOutAlt} />
       </div>
-      <Message message={message} userName={userName} editMessage={editMessage}/>
+      <Message messages={messages} userName={userName} editMessage={editMessage}/>
       <div className="submit-message">
         <input
           placeholder="Enter your message"

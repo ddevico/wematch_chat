@@ -15,7 +15,7 @@ const socket = io.connect('/');
 const store = createStore(rootReducers);
 
 const PrivateRoute = ({ children }) => {  
-  return isAuthenticated()  ? children : <Navigate to="/SignIn" />;
+  return isAuthenticated()  ? children : <Navigate to="/signIn" />;
 }
 
 const App = () => {
@@ -27,7 +27,10 @@ const App = () => {
           <Route path='/signUp' element={<SignUp />} />
           <Route
             path='/signIn'
-            element={!isAuthenticated() ? (<SignIn />) : (<Navigate to={{ pathname: "/" }} />)}
+            /*element={
+              !isAuthenticated() ? (<SignIn />) : (<Navigate to={{ pathname: "/" }} />)
+            }*/
+            element={<SignIn />}
           />
           <Route
           element={
