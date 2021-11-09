@@ -9,7 +9,6 @@ export const login = token => {
 }
 
 export const logout = () => {
-    window.localStorage.removeItem("user")
     sessionStorage.removeItem(TOKEN_KEY)
 }
 

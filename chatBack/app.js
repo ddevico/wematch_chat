@@ -20,7 +20,7 @@ var port = 5000;
 
 var server = http.createServer(app);
 
-server.listen(port,()=>{
+server.listen(port, () => {
   console.log(`Server is up on port ${port}!`);
 })
 
@@ -30,12 +30,12 @@ app.set('socketio', io);
 require('./socket')(io)
 
 const url = 'mongodb://localhost:27017/';
-const options = {useNewUrlParser: true, useUnifiedTopology: true}
+const options = { useNewUrlParser: true, useUnifiedTopology: true }
 const mongo = mongoose.connect(url, options);
 mongo.then(() => {
-    console.log('connected');
+  console.log('connected');
 }, error => {
-    console.log(error, 'error');
+  console.log(error, 'error');
 })
 
 // view engine setup
@@ -53,12 +53,12 @@ app.use('/users', usersRouter);
 usersRouter
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

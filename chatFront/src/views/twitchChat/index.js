@@ -2,6 +2,7 @@ import "./style.scss";
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from 'react-redux'
 import { logout, getToken } from '../../utils/Auth'
+import { useDispatch } from 'react-redux'
 import { setUser } from '../../store/action/userAction'
 import Message from "./components/bubbleMessage";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,10 +17,7 @@ const TwitchChat = ({ socket }) => {
   let userName = useSelector(state => state.userReducer.user)
   const channelName = searchParams.get('channelName');
   const navigate = useNavigate();
-
-  if (!userName) {
-    userName = getToken()
-  }
+  const dispatch = useDispatch()
 
   async function getMessages() {
     try {
@@ -29,22 +27,14 @@ const TwitchChat = ({ socket }) => {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-     })
-      .then((response) => response.json())
-      .then((response) => {
-        setMessages(response)
       })
+        .then((response) => response.json())
+        .then((response) => {
+          setMessages(response)
+        })
     } catch (error) {
     }
   }
-
-  useEffect(() => {
-    socket.emit("connectUserOnChannel", { userName, channelName })
-  }, [socket])
-
-  useEffect(() => {
-    getMessages()
-  }, []);
 
   useEffect(() => {
     socket.on("message", (data) => {
@@ -52,14 +42,22 @@ const TwitchChat = ({ socket }) => {
     });
   }, [socket]);
 
+  useEffect(() => {
+    socket.emit("connectUserOnChannel", { userName, channelName })
+  }, [socket])
+
+  if (!userName) {
+    userName = getToken()
+  }
+
   const sendMessage = () => {
     if (text !== "") {
-      if (updateMessage){
+      if (updateMessage) {
         fetch('http://localhost:5000/messages/updateMessage/' + updateMessage._id, {
           method: 'PUT',
           headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             userName: updateMessage.userName,
@@ -67,11 +65,10 @@ const TwitchChat = ({ socket }) => {
             message: text
           }),
         })
-        .then((response) => {
-          socket.emit("message", text);
-          getMessages()
-          setUpdateMessage(null);
-        })
+          .then(() => {
+            socket.emit("message", text);
+            setUpdateMessage(null);
+          })
         setText("");
       }
       else {
@@ -79,8 +76,8 @@ const TwitchChat = ({ socket }) => {
         fetch('http://localhost:5000/messages/addMessage', {
           method: 'POST',
           headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             userName: userName,
@@ -88,14 +85,14 @@ const TwitchChat = ({ socket }) => {
             message: text
           }),
         })
-        .then((response) => {
-          messages.push({
-            userName: userName,
-            channelName: channelName,
-            text: text
-          });
-          setMessages([...messages]);
-        })
+          .then(() => {
+            messages.push({
+              userName: userName,
+              channelName: channelName,
+              text: text
+            });
+            setMessages([...messages]);
+          })
         setText("");
       }
     }
@@ -107,21 +104,20 @@ const TwitchChat = ({ socket }) => {
   }
 
   const disconnectUser = () => {
-    setUser(false)
-    window.localStorage.removeItem("user")
-    sessionStorage.removeItem("@SecretToken")
+    dispatch(setUser(false))
+    logout();
     navigate('/signIn')
   }
 
   return (
     <div className="chat">
       <div className="channel-name">
-          <h2>
-            {channelName} channel
-          </h2>
-          <FontAwesomeIcon onClick={() => disconnectUser()} style={{marginTop: "19px", marginRight:"10px", cursor: 'pointer'}} color="white" size="2x" ali icon={faSignOutAlt} />
+        <h2>
+          {channelName} channel
+        </h2>
+        <FontAwesomeIcon onClick={() => disconnectUser()} style={{ marginTop: "25px", marginRight: "10px", cursor: 'pointer' }} color="white" size="lg" ali icon={faSignOutAlt} />
       </div>
-      <Message messages={messages} userName={userName} editMessage={editMessage}/>
+      <Message messages={messages} userName={userName} editMessage={editMessage} />
       <div className="submit-message">
         <input
           placeholder="Enter your message"

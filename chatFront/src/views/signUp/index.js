@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./style.scss";
+import "../../App.scss";
 import { Link, useNavigate } from "react-router-dom";
 
 
@@ -21,21 +21,21 @@ function SignUp() {
           password: password,
         }),
       })
-      .then((response) => {
-          if (response.status !== 404){
+        .then((response) => {
+          if (response.status !== 404) {
             navigate('/')
           }
           else {
             alert("User already exists !")
           }
-      })
+        })
     } catch (error) {
       console.log(error)
     }
   }
 
   return (
-    <div className="sign-up">
+    <div className="form-style">
       <h1>Twitch chat clone</h1>
       <p>Create account</p>
       <input
@@ -54,7 +54,7 @@ function SignUp() {
         }
         type="submit">Create
       </button>
-      <a onClick={() => navigate('/')} style={{cursor: 'pointer'}}>Return</a>
+      <a onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>Return</a>
     </div>
   );
 }

@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
-import "./style.scss";
-import { setUser } from '../../store/action/userAction'
-import { useDispatch } from 'react-redux'
+import "../../App.scss";
 import { login, isAuthenticated } from '../../utils/Auth'
-import { Link, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../store/action/userAction'
 
 function SignIn() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch()
   let navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -31,8 +30,8 @@ function SignIn() {
           password: password,
         }),
       })
-      .then((response) => {
-          if (response.status !== 404){
+        .then((response) => {
+          if (response.status !== 404) {
             login(userName)
             dispatch(setUser(userName))
             navigate('/')
@@ -40,14 +39,14 @@ function SignIn() {
           else {
             alert("Error ! UserName or Password are not good !")
           }
-      })
+        })
     } catch (error) {
       console.log(error)
     }
   }
 
   return (
-    <div className="sign-in">
+    <div className="form-style">
       <h1>Twitch chat clone</h1>
       <p>Connexion</p>
       <input
@@ -66,7 +65,7 @@ function SignIn() {
         }
         type="submit">Connexion
       </button>
-      <a onClick={() => navigate('/signUp')} style={{cursor: 'pointer'}}>Not registered yet ? Create one here!</a>
+      <a onClick={() => navigate('/signUp')} style={{ cursor: 'pointer' }}>Not registered yet ? Create one here!</a>
     </div>
   );
 }

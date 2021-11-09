@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "./style.scss";
+import "../../App.scss";
 import { useSelector } from 'react-redux'
 import { Link } from "react-router-dom";
 
 function Home({ socket }) {
-  const [userName, setUserName] = useState("");
   const [channelName, setChannelName] = useState("");
   const user = useSelector(state => state.userReducer.user)
 
@@ -13,12 +12,11 @@ function Home({ socket }) {
   }, [socket])
 
   const callApi = () => {
-    setUserName(user)
     socket.emit("connectUserOnChannel", { user, channelName })
   }
 
   return (
-    <div className="home">
+    <div className="form-style">
       <h1>Twitch chat clone</h1>
       <input
         placeholder="Channel name"
@@ -26,7 +24,7 @@ function Home({ socket }) {
         onChange={(e) => setChannelName(e.target.value)}
       />
       <Link
-        onClick={event => (!channelName) ? (event.preventDefault(), alert("Error ! user or channel are missing !")) : callApi()
+        onClick={event => (!channelName) ? (event.preventDefault(), alert("Error ! Channel are missing !")) : callApi()
       }
         to={`/chat/?channelName=${channelName}`}
       >
